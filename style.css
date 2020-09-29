@@ -1,0 +1,16 @@
+*{
+    margin:0;padding:0;box-sizing: border-box;
+}
+#canvas{
+    widows: 100vw;
+    height: 100vh;
+    border:1px solid red;
+}
+.divStyle{
+    background:red;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    transform: translateX(-50%) translateY(-50%);
+    border-radius: 50%;
+}
