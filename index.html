@@ -1,23 +1,63 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div id="canvas">111</div>
-<script>
-    canvas.onclick=(e)=>{
-        console.log(e)
-        let div = document.createElement('div')
-        div.classList.add('divStyle')
-        div.style.left=e.clientX+'px';
-        div.style.top=e.clientY+'px';
-        canvas.appendChild(div);
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas id="canvas" width="100" height="100"> </canvas>
+    <script>
+      let canvas = document.getElementById("canvas");
+      // document.documentElement返回的是<html></html>
+    //   canvas.width = document.documentElement.clientWidth; //这两句才能有效设置canvas全屏
+    //   canvas.height = document.documentElement.clientHeight;
+      let ctx = canvas.getContext("2d");
+      ctx.lineWidth=15;
+      ctx.lineCap='round';
+      let painting = false;
+      let lastXY = []; //记录上一次的点
+      let isTouchDevice ="ontouchend" in document; // 判断是否是触控设备
+      if (isTouchDevice) {
+        canvas.ontouchstart = (e) => {
+          lastXY=[e.touches[0].clientX,e.touches[0].clientY] //onmousedown时给初始值
+        };
+        canvas.ontouchmove = (e) => {
+            drawLine(lastXY[0],lastXY[1],e.touches[0].clientX,e.touches[0].clientY)
+            lastXY=[e.touches[0].clientX,e.touches[0].clientY]; // 更新上一次的点
+        };
+      } else {
+        canvas.onmousedown = (e) => {
+          painting = true;
+          lastXY=[e.clientX,e.clientY] //onmousedown时给初始值
+        };
+        canvas.onmouseup = () => {
+          painting = false;
+        };
+        canvas.onmousemove = (e) => {
+          if (painting) {
+            // 用方形画线
+            // ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+            // ctx.fillRect (e.clientX-5, e.clientY-5, 10, 10);
+            // 用圆形画线
+            // ctx.beginPath(); // 当你想创建一个新的路径时，调用此方法
+            // ctx.arc(e.clientX,e.clientY,5,0,Math.PI*2,false);
+            // ctx.fillStyle="rgba(192,80,77,0.7)";//半透明的红色
+            // ctx.fill();
 
-    }
-</script>
-</body>
+            // 用画线方式画线
+            drawLine(lastXY[0],lastXY[1],e.clientX, e.clientY)
+            lastXY=[e.clientX,e.clientY]; // 更新上一次的点
+          }
+        };
+      }
+      function drawLine(x1,y1,x2,y2){
+                ctx.beginPath();
+                ctx.moveTo(x1,y1);
+                ctx.lineTo(x2,y2);
+                ctx.stroke();
+        }
+    </script>
+  </body>
 </html>
